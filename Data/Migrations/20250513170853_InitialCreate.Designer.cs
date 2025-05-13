@@ -11,7 +11,7 @@ using VtuberMerchHub.Data;
 namespace VtuberMerchHub.Data.Migrations
 {
     [DbContext(typeof(VtuberMerchHubDbContext))]
-    [Migration("20250511162400_InitialCreate")]
+    [Migration("20250513170853_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -26,14 +26,18 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("AdminId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("admin_id");
 
                     b.Property<string>("AdminName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("admin_name");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.HasKey("AdminId");
 
@@ -47,13 +51,18 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("cart_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("customer_id");
 
                     b.HasKey("CartId");
 
@@ -66,16 +75,20 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("CartItemId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("cart_item_id");
 
                     b.Property<int>("CartId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("cart_id");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.HasKey("CartItemId");
 
@@ -90,15 +103,19 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("category_name");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.HasKey("CategoryId");
 
@@ -109,19 +126,26 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("CompanyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("address");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("company_name");
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("contact_email");
 
                     b.HasKey("CompanyId");
 
@@ -132,32 +156,43 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("customer_id");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("address");
 
                     b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("birth_date");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("full_name");
 
                     b.Property<int?>("GenderId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("gender_id");
 
                     b.Property<string>("Nickname")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("nickname");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("phone_number");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.HasKey("CustomerId");
 
@@ -173,17 +208,21 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("event_id");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.Property<int>("VtuberId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("vtuber_id");
 
                     b.HasKey("EventId");
 
@@ -196,11 +235,14 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("GenderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("gender_id");
 
                     b.Property<string>("GenderType")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("gender");
 
                     b.HasKey("GenderId");
 
@@ -211,24 +253,31 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("MerchandiseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("merchandise_id");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("end_date");
 
                     b.Property<string>("MerchandiseName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("merchandise_name");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("start_date");
 
                     b.Property<int>("VtuberId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("vtuber_id");
 
                     b.HasKey("MerchandiseId");
 
@@ -241,20 +290,27 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("order_id");
 
                     b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("customer_id");
 
                     b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("order_date")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("ShippingAddress")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("shipping_address");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("total_amount");
 
                     b.HasKey("OrderId");
 
@@ -267,19 +323,24 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("order_detail_id");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("order_id");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("price");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.HasKey("OrderDetailId");
 
@@ -294,31 +355,41 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
 
                     b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("image_url");
 
                     b.Property<int>("MerchandiseId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("merchandise_id");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("price");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("product_name");
 
                     b.Property<int>("Stock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("stock");
 
                     b.HasKey("ProductId");
 
@@ -333,15 +404,19 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("SpeciesId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("species_id");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.Property<string>("SpeciesName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("species_name");
 
                     b.HasKey("SpeciesId");
 
@@ -352,31 +427,42 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.Property<string>("AvatarUrl")
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("avatar_url");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("role");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
 
                     b.HasKey("UserId");
 
@@ -387,42 +473,57 @@ namespace VtuberMerchHub.Data.Migrations
                 {
                     b.Property<int>("VtuberId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("vtuber_id");
 
                     b.Property<string>("Channel")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("channel");
 
                     b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
 
                     b.Property<DateTime?>("DebutDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("debut_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
 
                     b.Property<string>("ModelUrl")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("model_url");
 
                     b.Property<string>("RealName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("real_name");
 
                     b.Property<int?>("SpeciesId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("species_id");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.Property<int?>("VtuberGender")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("vtuber_gender");
 
                     b.Property<string>("VtuberName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("vtuber_name");
 
                     b.HasKey("VtuberId");
 

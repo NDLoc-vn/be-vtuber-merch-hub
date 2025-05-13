@@ -19,16 +19,16 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    category_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CategoryName = table.Column<string>(type: "longtext", nullable: false)
+                    category_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.category_id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -36,18 +36,18 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                    company_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CompanyName = table.Column<string>(type: "longtext", nullable: false)
+                    company_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Address = table.Column<string>(type: "longtext", nullable: false)
+                    address = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ContactEmail = table.Column<string>(type: "longtext", nullable: false)
+                    contact_email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.CompanyId);
+                    table.PrimaryKey("PK_Companies", x => x.company_id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -55,14 +55,14 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Genders",
                 columns: table => new
                 {
-                    GenderId = table.Column<int>(type: "int", nullable: false)
+                    gender_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GenderType = table.Column<string>(type: "longtext", nullable: false)
+                    gender = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genders", x => x.GenderId);
+                    table.PrimaryKey("PK_Genders", x => x.gender_id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -70,16 +70,16 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Species",
                 columns: table => new
                 {
-                    SpeciesId = table.Column<int>(type: "int", nullable: false)
+                    species_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    SpeciesName = table.Column<string>(type: "longtext", nullable: false)
+                    species_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Species", x => x.SpeciesId);
+                    table.PrimaryKey("PK_Species", x => x.species_id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -87,22 +87,22 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    user_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
+                    email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
+                    password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Role = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    role = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "longtext", nullable: true)
+                    created_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    updated_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+                    avatar_url = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.user_id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -110,20 +110,20 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Admins",
                 columns: table => new
                 {
-                    AdminId = table.Column<int>(type: "int", nullable: false)
+                    admin_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    AdminName = table.Column<string>(type: "longtext", nullable: false)
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    admin_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admins", x => x.AdminId);
+                    table.PrimaryKey("PK_Admins", x => x.admin_id);
                     table.ForeignKey(
-                        name: "FK_Admins_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Admins_Users_user_id",
+                        column: x => x.user_id,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -132,33 +132,33 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    customer_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FullName = table.Column<string>(type: "longtext", nullable: false)
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    full_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Nickname = table.Column<string>(type: "longtext", nullable: false)
+                    nickname = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Address = table.Column<string>(type: "longtext", nullable: false)
+                    address = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
+                    phone_number = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    BirthDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    GenderId = table.Column<int>(type: "int", nullable: true)
+                    birth_date = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    gender_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
+                    table.PrimaryKey("PK_Customers", x => x.customer_id);
                     table.ForeignKey(
-                        name: "FK_Customers_Genders_GenderId",
-                        column: x => x.GenderId,
+                        name: "FK_Customers_Genders_gender_id",
+                        column: x => x.gender_id,
                         principalTable: "Genders",
-                        principalColumn: "GenderId");
+                        principalColumn: "gender_id");
                     table.ForeignKey(
-                        name: "FK_Customers_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Customers_Users_user_id",
+                        column: x => x.user_id,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -167,47 +167,47 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Vtubers",
                 columns: table => new
                 {
-                    VtuberId = table.Column<int>(type: "int", nullable: false)
+                    vtuber_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    VtuberName = table.Column<string>(type: "longtext", nullable: false)
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    vtuber_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RealName = table.Column<string>(type: "longtext", nullable: false)
+                    real_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    DebutDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Channel = table.Column<string>(type: "longtext", nullable: false)
+                    debut_date = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    channel = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    VtuberGender = table.Column<int>(type: "int", nullable: true),
-                    SpeciesId = table.Column<int>(type: "int", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
-                    ModelUrl = table.Column<string>(type: "longtext", nullable: false)
+                    vtuber_gender = table.Column<int>(type: "int", nullable: true),
+                    species_id = table.Column<int>(type: "int", nullable: true),
+                    company_id = table.Column<int>(type: "int", nullable: true),
+                    model_url = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vtubers", x => x.VtuberId);
+                    table.PrimaryKey("PK_Vtubers", x => x.vtuber_id);
                     table.ForeignKey(
-                        name: "FK_Vtubers_Companies_CompanyId",
-                        column: x => x.CompanyId,
+                        name: "FK_Vtubers_Companies_company_id",
+                        column: x => x.company_id,
                         principalTable: "Companies",
-                        principalColumn: "CompanyId");
+                        principalColumn: "company_id");
                     table.ForeignKey(
-                        name: "FK_Vtubers_Genders_VtuberGender",
-                        column: x => x.VtuberGender,
+                        name: "FK_Vtubers_Genders_vtuber_gender",
+                        column: x => x.vtuber_gender,
                         principalTable: "Genders",
-                        principalColumn: "GenderId");
+                        principalColumn: "gender_id");
                     table.ForeignKey(
-                        name: "FK_Vtubers_Species_SpeciesId",
-                        column: x => x.SpeciesId,
+                        name: "FK_Vtubers_Species_species_id",
+                        column: x => x.species_id,
                         principalTable: "Species",
-                        principalColumn: "SpeciesId");
+                        principalColumn: "species_id");
                     table.ForeignKey(
-                        name: "FK_Vtubers_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Vtubers_Users_user_id",
+                        column: x => x.user_id,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -216,19 +216,19 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Carts",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "int", nullable: false)
+                    cart_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    customer_id = table.Column<int>(type: "int", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.CartId);
+                    table.PrimaryKey("PK_Carts", x => x.cart_id);
                     table.ForeignKey(
-                        name: "FK_Carts_Customers_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Carts_Customers_customer_id",
+                        column: x => x.customer_id,
                         principalTable: "Customers",
-                        principalColumn: "CustomerId",
+                        principalColumn: "customer_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -237,22 +237,22 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    order_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ShippingAddress = table.Column<string>(type: "longtext", nullable: false)
+                    customer_id = table.Column<int>(type: "int", nullable: false),
+                    order_date = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    total_amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    shipping_address = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.PrimaryKey("PK_Orders", x => x.order_id);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Orders_Customers_customer_id",
+                        column: x => x.customer_id,
                         principalTable: "Customers",
-                        principalColumn: "CustomerId",
+                        principalColumn: "customer_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -261,21 +261,21 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Events",
                 columns: table => new
                 {
-                    EventId = table.Column<int>(type: "int", nullable: false)
+                    event_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    VtuberId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    vtuber_id = table.Column<int>(type: "int", nullable: false),
+                    date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Events", x => x.EventId);
+                    table.PrimaryKey("PK_Events", x => x.event_id);
                     table.ForeignKey(
-                        name: "FK_Events_Vtubers_VtuberId",
-                        column: x => x.VtuberId,
+                        name: "FK_Events_Vtubers_vtuber_id",
+                        column: x => x.vtuber_id,
                         principalTable: "Vtubers",
-                        principalColumn: "VtuberId",
+                        principalColumn: "vtuber_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -284,24 +284,24 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Merchandises",
                 columns: table => new
                 {
-                    MerchandiseId = table.Column<int>(type: "int", nullable: false)
+                    merchandise_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    VtuberId = table.Column<int>(type: "int", nullable: false),
-                    MerchandiseName = table.Column<string>(type: "longtext", nullable: false)
+                    vtuber_id = table.Column<int>(type: "int", nullable: false),
+                    merchandise_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    start_date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    end_date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Merchandises", x => x.MerchandiseId);
+                    table.PrimaryKey("PK_Merchandises", x => x.merchandise_id);
                     table.ForeignKey(
-                        name: "FK_Merchandises_Vtubers_VtuberId",
-                        column: x => x.VtuberId,
+                        name: "FK_Merchandises_Vtubers_vtuber_id",
+                        column: x => x.vtuber_id,
                         principalTable: "Vtubers",
-                        principalColumn: "VtuberId",
+                        principalColumn: "vtuber_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -310,32 +310,32 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    product_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    MerchandiseId = table.Column<int>(type: "int", nullable: false),
-                    ProductName = table.Column<string>(type: "longtext", nullable: false)
+                    merchandise_id = table.Column<int>(type: "int", nullable: false),
+                    product_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "longtext", nullable: false)
+                    image_url = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    stock = table.Column<int>(type: "int", nullable: false),
+                    description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    category_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.PrimaryKey("PK_Products", x => x.product_id);
                     table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Products_Categories_category_id",
+                        column: x => x.category_id,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId");
+                        principalColumn: "category_id");
                     table.ForeignKey(
-                        name: "FK_Products_Merchandises_MerchandiseId",
-                        column: x => x.MerchandiseId,
+                        name: "FK_Products_Merchandises_merchandise_id",
+                        column: x => x.merchandise_id,
                         principalTable: "Merchandises",
-                        principalColumn: "MerchandiseId",
+                        principalColumn: "merchandise_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -344,26 +344,26 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "CartItems",
                 columns: table => new
                 {
-                    CartItemId = table.Column<int>(type: "int", nullable: false)
+                    cart_item_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CartId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    cart_id = table.Column<int>(type: "int", nullable: false),
+                    product_id = table.Column<int>(type: "int", nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.CartItemId);
+                    table.PrimaryKey("PK_CartItems", x => x.cart_item_id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Carts_CartId",
-                        column: x => x.CartId,
+                        name: "FK_CartItems_Carts_cart_id",
+                        column: x => x.cart_id,
                         principalTable: "Carts",
-                        principalColumn: "CartId",
+                        principalColumn: "cart_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartItems_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_CartItems_Products_product_id",
+                        column: x => x.product_id,
                         principalTable: "Products",
-                        principalColumn: "ProductId",
+                        principalColumn: "product_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -372,118 +372,118 @@ namespace VtuberMerchHub.Data.Migrations
                 name: "OrderDetails",
                 columns: table => new
                 {
-                    OrderDetailId = table.Column<int>(type: "int", nullable: false)
+                    order_detail_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    order_id = table.Column<int>(type: "int", nullable: false),
+                    product_id = table.Column<int>(type: "int", nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: false),
+                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => x.OrderDetailId);
+                    table.PrimaryKey("PK_OrderDetails", x => x.order_detail_id);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Orders_OrderId",
-                        column: x => x.OrderId,
+                        name: "FK_OrderDetails_Orders_order_id",
+                        column: x => x.order_id,
                         principalTable: "Orders",
-                        principalColumn: "OrderId",
+                        principalColumn: "order_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_OrderDetails_Products_product_id",
+                        column: x => x.product_id,
                         principalTable: "Products",
-                        principalColumn: "ProductId",
+                        principalColumn: "product_id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Admins_UserId",
+                name: "IX_Admins_user_id",
                 table: "Admins",
-                column: "UserId",
+                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_CartId",
+                name: "IX_CartItems_cart_id",
                 table: "CartItems",
-                column: "CartId");
+                column: "cart_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductId",
+                name: "IX_CartItems_product_id",
                 table: "CartItems",
-                column: "ProductId");
+                column: "product_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Carts_CustomerId",
+                name: "IX_Carts_customer_id",
                 table: "Carts",
-                column: "CustomerId");
+                column: "customer_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_GenderId",
+                name: "IX_Customers_gender_id",
                 table: "Customers",
-                column: "GenderId");
+                column: "gender_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_UserId",
+                name: "IX_Customers_user_id",
                 table: "Customers",
-                column: "UserId",
+                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_VtuberId",
+                name: "IX_Events_vtuber_id",
                 table: "Events",
-                column: "VtuberId");
+                column: "vtuber_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Merchandises_VtuberId",
+                name: "IX_Merchandises_vtuber_id",
                 table: "Merchandises",
-                column: "VtuberId");
+                column: "vtuber_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_OrderId",
+                name: "IX_OrderDetails_order_id",
                 table: "OrderDetails",
-                column: "OrderId");
+                column: "order_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_ProductId",
+                name: "IX_OrderDetails_product_id",
                 table: "OrderDetails",
-                column: "ProductId");
+                column: "product_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerId",
+                name: "IX_Orders_customer_id",
                 table: "Orders",
-                column: "CustomerId");
+                column: "customer_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_CategoryId",
+                name: "IX_Products_category_id",
                 table: "Products",
-                column: "CategoryId");
+                column: "category_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_MerchandiseId",
+                name: "IX_Products_merchandise_id",
                 table: "Products",
-                column: "MerchandiseId");
+                column: "merchandise_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vtubers_CompanyId",
+                name: "IX_Vtubers_company_id",
                 table: "Vtubers",
-                column: "CompanyId");
+                column: "company_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vtubers_SpeciesId",
+                name: "IX_Vtubers_species_id",
                 table: "Vtubers",
-                column: "SpeciesId");
+                column: "species_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vtubers_UserId",
+                name: "IX_Vtubers_user_id",
                 table: "Vtubers",
-                column: "UserId",
+                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vtubers_VtuberGender",
+                name: "IX_Vtubers_vtuber_gender",
                 table: "Vtubers",
-                column: "VtuberGender");
+                column: "vtuber_gender");
         }
 
         /// <inheritdoc />

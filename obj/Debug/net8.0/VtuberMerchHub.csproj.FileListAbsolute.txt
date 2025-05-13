@@ -117,3 +117,4 @@ D:\DUT\Graduation-Thesis\project\backend\VtuberMerchHub\obj\Debug\net8.0\VtuberM
 D:\DUT\Graduation-Thesis\project\backend\VtuberMerchHub\obj\Debug\net8.0\ref\VtuberMerchHub.dll
 D:\DUT\Graduation-Thesis\project\backend\VtuberMerchHub\bin\Debug\net8.0\CloudinaryDotNet.dll
 D:\DUT\Graduation-Thesis\project\backend\VtuberMerchHub\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\DUT\Graduation-Thesis\project\backend\VtuberMerchHub\obj\Debug\net8.0\VtuberMerchHub.sourcelink.json

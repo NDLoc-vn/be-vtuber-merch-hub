@@ -81,7 +81,7 @@ namespace VtuberMerchHub.Controllers
             _vtuberService = vtuberService;
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllVtubers()
         {
@@ -89,7 +89,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(vtubers);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVtuber(int id)
         {
@@ -155,7 +155,7 @@ namespace VtuberMerchHub.Controllers
             _productService = productService;
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
@@ -163,7 +163,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(products);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -171,7 +171,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(product);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("merchandise/{merchandiseId}")]
         public async Task<IActionResult> GetProductsByMerchandise(int merchandiseId)
         {
@@ -231,7 +231,7 @@ namespace VtuberMerchHub.Controllers
             _merchandiseService = merchandiseService;
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllMerchandises()
         {
@@ -239,7 +239,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(merchandises);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMerchandise(int id)
         {
