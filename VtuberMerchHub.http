@@ -1,0 +1,6 @@
+@VtuberMerchHub_HostAddress = http://localhost:5229
+
+GET {{VtuberMerchHub_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
