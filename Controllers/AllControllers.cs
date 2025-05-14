@@ -249,18 +249,33 @@ namespace VtuberMerchHub.Controllers
 
         [Authorize(Roles = "Vtuber")]
         [HttpPost]
-        public async Task<IActionResult> CreateMerchandise([FromBody] Merchandise merchandise)
+        public async Task<IActionResult> CreateMerchandise([FromBody] CreateMerchandiseRequest merchandise)
         {
-            var createdMerchandise = await _merchandiseService.CreateMerchandiseAsync(merchandise);
+            var createdMerchandise = await _merchandiseService.CreateMerchandiseAsync(
+                merchandise.VtuberId,
+                merchandise.MerchandiseName,
+                merchandise.ImageUrl,
+                merchandise.StartDate,
+                merchandise.EndDate,
+                merchandise.Description
+            );
             return Ok(createdMerchandise);
         }
 
         [Authorize(Roles = "Vtuber")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMerchandise(int id, [FromBody] Merchandise merchandise)
+        public async Task<IActionResult> UpdateMerchandise(int id, [FromBody] UpdateMerchandiseRequest merchandise)
         {
-            merchandise.MerchandiseId = id;
-            var updatedMerchandise = await _merchandiseService.UpdateMerchandiseAsync(merchandise);
+            // var updatedMerchandise = await _merchandiseService.UpdateMerchandiseAsync(merchandise);
+            var updatedMerchandise = await _merchandiseService.UpdateMerchandiseAsync(
+                id,
+                merchandise.MerchandiseName,
+                merchandise.ImageUrl,
+                merchandise.StartDate,
+                merchandise.EndDate,
+                merchandise.Description,
+                merchandise.VtuberId
+            );
             return Ok(updatedMerchandise);
         }
 
@@ -464,6 +479,26 @@ namespace VtuberMerchHub.Controllers
         public int Stock { get; set; }
         public string? Description { get; set; }
         public int? CategoryId { get; set; }
+    }
+
+    public class CreateMerchandiseRequest
+    {
+        public string MerchandiseName { get; set; }
+        public IFormFile ImageUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string? Description { get; set; }
+        public int VtuberId { get; set; }
+    }
+
+    public class UpdateMerchandiseRequest
+    {
+        public string? MerchandiseName { get; set; }
+        public IFormFile? ImageUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string? Description { get; set; }
+        public int? VtuberId { get; set; }
     }
 
     public class AddCartItemRequest

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VtuberMerchHub.Data;
 
@@ -10,9 +11,11 @@ using VtuberMerchHub.Data;
 namespace VtuberMerchHub.Data.Migrations
 {
     [DbContext(typeof(VtuberMerchHubDbContext))]
-    partial class VtuberMerchHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514151736_NullCollumn")]
+    partial class NullCollumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,10 +257,6 @@ namespace VtuberMerchHub.Data.Migrations
                         .IsRequired()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("end_date");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("MerchandiseName")
                         .IsRequired()

@@ -31,9 +31,9 @@ namespace VtuberMerchHub.Models
         public int CustomerId { get; set; }
         public int UserId { get; set; }
         public string FullName { get; set; }
-        public string Nickname { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Nickname { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
         public DateTime? BirthDate { get; set; }
         public int? GenderId { get; set; }
 
@@ -58,10 +58,10 @@ namespace VtuberMerchHub.Models
         public int VtuberId { get; set; }
         public int UserId { get; set; }
         public string VtuberName { get; set; }
-        public string RealName { get; set; }
+        public string? RealName { get; set; }
         public DateTime? DebutDate { get; set; }
         public string Channel { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int? VtuberGender { get; set; }
         public int? SpeciesId { get; set; }
         public int? CompanyId { get; set; }
@@ -80,7 +80,7 @@ namespace VtuberMerchHub.Models
     {
         public int SpeciesId { get; set; }
         public string SpeciesName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public List<Vtuber> Vtubers { get; set; }
     }
 
@@ -89,8 +89,8 @@ namespace VtuberMerchHub.Models
     {
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
-        public string Address { get; set; }
-        public string ContactEmail { get; set; }
+        public string? Address { get; set; }
+        public string? ContactEmail { get; set; }
         public List<Vtuber> Vtubers { get; set; }
     }
 
@@ -100,7 +100,7 @@ namespace VtuberMerchHub.Models
         public int EventId { get; set; }
         public int VtuberId { get; set; }
         public DateTime Date { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public Vtuber Vtuber { get; set; }
     }
@@ -110,7 +110,7 @@ namespace VtuberMerchHub.Models
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public List<Product> Products { get; set; }
     }
 
@@ -120,9 +120,10 @@ namespace VtuberMerchHub.Models
         public int MerchandiseId { get; set; }
         public int VtuberId { get; set; }
         public string MerchandiseName { get; set; }
-        public string Description { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string? Description { get; set; }
+        public string ImageUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public Vtuber Vtuber { get; set; }
         public List<Product> Products { get; set; }
@@ -136,8 +137,8 @@ namespace VtuberMerchHub.Models
         public string ProductName { get; set; }
         public string ImageUrl { get; set; }
         public decimal Price { get; set; }
-        public int Stock { get; set; }
-        public string Description { get; set; }
+        public int? Stock { get; set; }
+        public string? Description { get; set; }
         public int? CategoryId { get; set; }
 
         public Merchandise Merchandise { get; set; }

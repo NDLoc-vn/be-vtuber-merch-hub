@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VtuberMerchHub.Data;
 
@@ -10,9 +11,11 @@ using VtuberMerchHub.Data;
 namespace VtuberMerchHub.Data.Migrations
 {
     [DbContext(typeof(VtuberMerchHubDbContext))]
-    partial class VtuberMerchHubDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514164750_MerchImageURL")]
+    partial class MerchImageURL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
