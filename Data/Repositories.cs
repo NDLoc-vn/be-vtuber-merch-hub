@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using VtuberMerchHub.DTOs;
 using VtuberMerchHub.Models;
 
 namespace VtuberMerchHub.Data
@@ -67,7 +68,7 @@ namespace VtuberMerchHub.Data
     public interface IVtuberRepository
     {
         Task<Vtuber> GetVtuberByIdAsync(int id);
-        Task<List<Vtuber>> GetAllVtubersAsync();
+        Task<List<VtuberDTO>> GetAllVtubersAsync();
         Task<Vtuber> CreateVtuberAsync(Vtuber vtuber);
         Task<Vtuber> UpdateVtuberAsync(Vtuber vtuber);
         Task<bool> DeleteVtuberAsync(int id);
@@ -88,9 +89,85 @@ namespace VtuberMerchHub.Data
             return await _context.Vtubers.FindAsync(id);
         }
 
-        public async Task<List<Vtuber>> GetAllVtubersAsync()
+        public async Task<List<VtuberDTO>> GetAllVtubersAsync()
         {
-            return await _context.Vtubers.ToListAsync();
+            var vtuberEntities = await _context.Vtubers
+                .Include(v => v.User)
+                .Include(v => v.Gender)
+                .Include(v => v.Species)
+                .Include(v => v.Company)
+                .Include(v => v.Merchandises)
+                    .ThenInclude(m => m.Products)
+                        .ThenInclude(p => p.Category)
+                .ToListAsync();
+
+            return vtuberEntities.Select(v => new VtuberDTO
+            {
+                VtuberId = v.VtuberId,
+                UserId = v.UserId,
+                VtuberName = v.VtuberName,
+                RealName = v.RealName,
+                DebutDate = v.DebutDate,
+                Channel = v.Channel,
+                Description = v.Description,
+                VtuberGender = v.VtuberGender,
+                SpeciesId = v.SpeciesId,
+                CompanyId = v.CompanyId,
+                ModelUrl = v.ModelUrl,
+                User = v.User == null ? null : new UserDTO
+                {
+                    UserId = v.User.UserId,
+                    Email = v.User.Email,
+                    Role = v.User.Role,
+                    CreatedAt = v.User.CreatedAt,
+                    UpdatedAt = v.User.UpdatedAt,
+                    AvatarUrl = v.User.AvatarUrl
+                },
+                Gender = v.Gender == null ? null : new GenderDTO
+                {
+                    GenderId = v.Gender.GenderId,
+                    GenderType = v.Gender.GenderType
+                },
+                Species = v.Species == null ? null : new SpeciesDTO
+                {
+                    SpeciesId = v.Species.SpeciesId,
+                    SpeciesName = v.Species.SpeciesName,
+                    Description = v.Species.Description
+                },
+                Company = v.Company == null ? null : new CompanyDTO
+                {
+                    CompanyId = v.Company.CompanyId,
+                    CompanyName = v.Company.CompanyName,
+                    Address = v.Company.Address,
+                    ContactEmail = v.Company.ContactEmail
+                },
+                Merchandises = v.Merchandises?.Select(m => new MerchandiseDTO
+                {
+                    MerchandiseId = m.MerchandiseId,
+                    VtuberId = m.VtuberId,
+                    MerchandiseName = m.MerchandiseName,
+                    Description = m.Description,
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    Products = m.Products?.Select(p => new ProductDTO
+                    {
+                        ProductId = p.ProductId,
+                        MerchandiseId = p.MerchandiseId,
+                        ProductName = p.ProductName,
+                        Price = p.Price,
+                        Stock = p.Stock,
+                        ImageUrl = p.ImageUrl,
+                        Description = p.Description,
+                        CategoryId = p.CategoryId,
+                        Category = p.Category == null ? null : new CategoryDTO
+                        {
+                            CategoryId = p.Category.CategoryId,
+                            CategoryName = p.Category.CategoryName,
+                            Description = p.Category.Description
+                        }
+                    }).ToList() ?? new List<ProductDTO>()
+                }).ToList() ?? new List<MerchandiseDTO>()
+            }).ToList();
         }
 
         public async Task<Vtuber> CreateVtuberAsync(Vtuber vtuber)
@@ -139,7 +216,10 @@ namespace VtuberMerchHub.Data
 
         public async Task<Merchandise> GetMerchandiseByIdAsync(int id)
         {
-            return await _context.Merchandises.FindAsync(id);
+            return await _context.Merchandises
+                .Include(m => m.Vtuber)
+                .Include(m => m.Products)
+                .FirstOrDefaultAsync(m => m.MerchandiseId == id);
         }
 
         public async Task<List<Merchandise>> GetAllMerchandisesAsync()

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VtuberMerchHub.Data;
 using VtuberMerchHub.Models;
 using Microsoft.AspNetCore.Http;
+using VtuberMerchHub.DTOs;
 
 namespace VtuberMerchHub.Services
 {
@@ -126,7 +127,7 @@ namespace VtuberMerchHub.Services
     public interface IVtuberService
     {
         Task<Vtuber> GetVtuberByIdAsync(int id);
-        Task<List<Vtuber>> GetAllVtubersAsync();
+        Task<List<VtuberDTO>> GetAllVtubersAsync();
         Task<Vtuber> CreateVtuberAsync(int userId, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile);
         Task<Vtuber> UpdateVtuberAsync(int id, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile);
         Task<bool> DeleteVtuberAsync(int id);
@@ -149,7 +150,7 @@ namespace VtuberMerchHub.Services
             return await _vtuberRepository.GetVtuberByIdAsync(id) ?? throw new Exception("Vtuber không tìm thấy");
         }
 
-        public async Task<List<Vtuber>> GetAllVtubersAsync()
+        public async Task<List<VtuberDTO>> GetAllVtubersAsync()
         {
             return await _vtuberRepository.GetAllVtubersAsync();
         }
