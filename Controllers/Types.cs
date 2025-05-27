@@ -1,0 +1,111 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using VtuberMerchHub.Models;
+using VtuberMerchHub.Services;
+
+namespace VtuberMerchHub.Controllers
+{
+    public class RegisterRequest
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+    }
+
+    public class LoginRequest
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class ForgotPasswordRequest
+    {
+        public string Email { get; set; }
+    }
+
+    public class UpdateUserRequest
+    {
+        public string? Email { get; set; }
+        public IFormFile? Avatar { get; set; }
+    }
+
+    public class CreateVtuberRequest
+    {
+        public int UserId { get; set; }
+        public string VtuberName { get; set; }
+        public string? RealName { get; set; }
+        public DateTime? DebutDate { get; set; }
+        public string? Channel { get; set; }
+        public string? Description { get; set; }
+        public int? VtuberGender { get; set; }
+        public int? SpeciesId { get; set; }
+        public int? CompanyId { get; set; }
+        public IFormFile ModelFile { get; set; }
+    }
+
+    public class UpdateVtuberRequest
+    {
+        public string? VtuberName { get; set; }
+        public string? RealName { get; set; }
+        public DateTime? DebutDate { get; set; }
+        public string? Channel { get; set; }
+        public string? Description { get; set; }
+        public int? VtuberGender { get; set; }
+        public int? SpeciesId { get; set; }
+        public int? CompanyId { get; set; }
+        public IFormFile? ModelFile { get; set; }
+    }
+
+    public class CreateProductRequest
+    {
+        public int MerchandiseId { get; set; }
+        public string ProductName { get; set; }
+        public IFormFile ImageFile { get; set; }
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+        public string? Description { get; set; }
+        public int? CategoryId { get; set; }
+    }
+
+    public class UpdateProductRequest
+    {
+        public string? ProductName { get; set; }
+        public IFormFile? ImageFile { get; set; }
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+        public string? Description { get; set; }
+        public int? CategoryId { get; set; }
+    }
+
+    public class CreateMerchandiseRequest
+    {
+        public string MerchandiseName { get; set; }
+        public IFormFile ImageUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string? Description { get; set; }
+        public int VtuberId { get; set; }
+    }
+
+    public class UpdateMerchandiseRequest
+    {
+        public string? MerchandiseName { get; set; }
+        public IFormFile? ImageUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string? Description { get; set; }
+        public int? VtuberId { get; set; }
+    }
+
+    public class AddCartItemRequest
+    {
+        public int CustomerId { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class UpdateCartItemRequest
+    {
+        public int Quantity { get; set; }
+    }
+}
