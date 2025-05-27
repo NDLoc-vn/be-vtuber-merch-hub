@@ -16,6 +16,7 @@ namespace VtuberMerchHub.Services
     {
         Task<User> RegisterUserAsync(string email, string password, string role);
         Task<string> LoginUserAsync(string email, string password);
+        Task<string> FindRoleUserAsync(string email, string password);
         Task<bool> ForgotPasswordAsync(string email);
         Task<User> GetUserByIdAsync(int id);
         Task<List<User>> GetAllUsersAsync();
@@ -81,6 +82,15 @@ namespace VtuberMerchHub.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<string> FindRoleUserAsync(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+                throw new Exception("Người dùng không tồn tại");
+
+            return user.Role;
         }
 
         public async Task<bool> ForgotPasswordAsync(string email)

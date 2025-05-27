@@ -27,7 +27,12 @@ namespace VtuberMerchHub.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var token = await _userService.LoginUserAsync(request.Email, request.Password);
-            return Ok(new { Token = token });
+            var role = await _userService.FindRoleUserAsync(request.Email, request.Password);
+            if (role == null)
+            {
+                return Unauthorized(new { Message = "Email hoặc mật khẩu không đúng" });
+            }
+            return Ok(new { Token = token, Role = role });
         }
 
         [HttpPost("forgot-password")]
