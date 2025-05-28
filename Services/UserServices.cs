@@ -23,6 +23,7 @@ namespace VtuberMerchHub.Services
         Task<CustomerDTO> GetCustomerInformationAsync(int id);
         Task<List<User>> GetAllUsersAsync();
         Task<User> UpdateUserAsync(int id, string email, IFormFile avatar);
+        Task<CustomerDTO> UpdateCustomerAsync(int id, IFormFile? avatar, string? address, string? phoneNumber, string? fullName, string? nickname, DateTime? birthDate, int? genderId);
         Task<bool> DeleteUserAsync(int id);
     }
 
@@ -144,6 +145,29 @@ namespace VtuberMerchHub.Services
                 user.AvatarUrl = await _cloudinaryService.UploadImageAsync(avatar);
             }
             return await _userRepository.UpdateUserAsync(user);
+        }
+
+        public async Task<CustomerDTO> UpdateCustomerAsync(int id, IFormFile? avatar, string? address, string? phoneNumber, string? fullName, string? nickname, DateTime? birthDate, int? genderId)
+        {
+            var customer = await _userRepository.GetCustomerInformationAsync(id) ?? throw new Exception("Người dùng không tìm thấy");
+            if (avatar != null)
+            {
+                customer.User.AvatarUrl = await _cloudinaryService.UploadImageAsync(avatar);
+            }
+            customer.Address = address ?? customer.Address;
+            customer.PhoneNumber = phoneNumber ?? customer.PhoneNumber;
+            customer.FullName = fullName ?? customer.FullName;
+            customer.Nickname = nickname ?? customer.Nickname;
+            customer.BirthDate = birthDate ?? customer.BirthDate;
+            if (genderId.HasValue)
+            {
+                customer.GenderId = genderId.Value;
+            }
+            if (genderId.HasValue && genderId.Value <= 0)
+            {
+                throw new ArgumentException("GenderId must be a positive integer");
+            }
+            return await _userRepository.UpdateCustomerAsync(customer);
         }
 
         public async Task<bool> DeleteUserAsync(int id)

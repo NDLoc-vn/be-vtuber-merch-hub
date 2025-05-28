@@ -23,6 +23,9 @@ namespace VtuberMerchHub.Services
 
             var account = new Account(cloudName, apiKey, apiSecret);
             _cloudinary = new Cloudinary(account);
+            // {
+            //     Api = { Secure = true }
+            // };
         }
 
         public async Task<string> UploadImageAsync(IFormFile file)
@@ -34,10 +37,13 @@ namespace VtuberMerchHub.Services
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Transformation = new Transformation().Width(500).Height(500).Crop("fit")
+                // Transformation = new Transformation().Width(500).Height(500).Crop("fit")
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            Console.WriteLine($"Uploaded Image URL: {uploadResult.SecureUrl}");
+            if (uploadResult.Error != null)
+                throw new System.Exception($"Lỗi khi tải lên hình ảnh: {uploadResult.Error.Message}");
             return uploadResult.SecureUrl.ToString();
         }
     }

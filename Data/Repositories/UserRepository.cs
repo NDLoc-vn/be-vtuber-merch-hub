@@ -13,6 +13,7 @@ namespace VtuberMerchHub.Data
         Task<User> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(int id);
         Task<CustomerDTO> GetCustomerInformationAsync(int userId);
+        Task <CustomerDTO> UpdateCustomerAsync(CustomerDTO customerDto);
     }
 
     // UserRepository
@@ -92,6 +93,36 @@ namespace VtuberMerchHub.Data
                     }
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<CustomerDTO> UpdateCustomerAsync(CustomerDTO customerDto)
+        {
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.UserId == customerDto.UserId);
+            if (customer == null)
+            {
+                throw new Exception("Customer not found");
+            }
+            customer.FullName = customerDto.FullName ?? customer.FullName;
+            customer.Nickname = customerDto.Nickname ?? customer.Nickname;
+            customer.Address = customerDto.Address ?? customer.Address;
+            customer.PhoneNumber = customerDto.PhoneNumber ?? customer.PhoneNumber;
+            customer.BirthDate = customerDto.BirthDate ?? customer.BirthDate;
+            customer.GenderId = customerDto.GenderId ?? customer.GenderId;
+            
+            _context.Customers.Update(customer);
+
+            var user = await _context.Users.FindAsync(customer.UserId);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            user.AvatarUrl = customerDto.User.AvatarUrl ?? user.AvatarUrl;
+            _context.Users.Update(user);
+            
+            await _context.SaveChangesAsync();
+
+            return customerDto;
         }
     }
 }

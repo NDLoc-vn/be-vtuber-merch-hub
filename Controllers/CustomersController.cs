@@ -16,7 +16,7 @@ namespace VtuberMerchHub.Controllers
             _userService = userService;
         }
 
-        [Authorize]
+        [Authorize (Roles = "Customer")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerInformation(int id)
         {
@@ -26,6 +26,32 @@ namespace VtuberMerchHub.Controllers
                 return NotFound(new { Message = "Khách hàng không tồn tại" });
             }
             return Ok(customer);
+        }
+
+        [Authorize (Roles = "Customer")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCustomerInformation(int id, [FromForm] UpdateCustomerRequest request)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { Message = "ID không hợp lệ" });
+            }
+
+            var updatedCustomer = await _userService.UpdateCustomerAsync(
+                id,
+                request.Avatar,
+                request.Address,
+                request.PhoneNumber,
+                request.FullName,
+                request.Nickname,
+                request.BirthDate,
+                request.GenderId
+            );
+            if (updatedCustomer == null)
+            {
+                return NotFound(new { Message = "Khách hàng không tồn tại" });
+            }
+            return Ok(updatedCustomer);
         }
     }
 }
