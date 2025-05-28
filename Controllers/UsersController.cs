@@ -19,7 +19,7 @@ namespace VtuberMerchHub.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var user = await _userService.RegisterUserAsync(request.Email, request.Password, request.Role);
+            var user = await _userService.RegisterUserAsync(request.Email, request.Password, request.Role, request.Name);
             return Ok(user);
         }
 

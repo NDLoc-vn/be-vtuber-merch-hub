@@ -14,7 +14,7 @@ namespace VtuberMerchHub.Services
 {
     public interface IUserService
     {
-        Task<User> RegisterUserAsync(string email, string password, string role);
+        Task<UserDTO> RegisterUserAsync(string email, string password, string role, string name);
         Task<string> LoginUserAsync(string email, string password);
         Task<string> FindRoleUserAsync(string email, string password);
         Task<int> FindIdUserAsync(string email, string password);
@@ -41,7 +41,7 @@ namespace VtuberMerchHub.Services
             _cloudinaryService = cloudinaryService;
         }
 
-        public async Task<User> RegisterUserAsync(string email, string password, string role)
+        public async Task<UserDTO> RegisterUserAsync(string email, string password, string role, string name)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(email);
             if (existingUser != null)
@@ -53,7 +53,24 @@ namespace VtuberMerchHub.Services
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
                 Role = role
             };
-            return await _userRepository.CreateUserAsync(user);
+
+            var createdUser = await _userRepository.CreateUserAsync(user);
+            if (role == "Customer")
+            {
+                // Create a customer profile if the user is a customer
+                var customerDto = new CustomerDTO
+                {
+                    UserId = createdUser.UserId,
+                    FullName = name,
+                    Nickname = name,
+                    Address = string.Empty,
+                    PhoneNumber = string.Empty,
+                    BirthDate = null,
+                    GenderId = null
+                };
+                await _userRepository.CreateCustomerAsync(customerDto);
+            }
+            return createdUser;
         }
 
         public async Task<string> LoginUserAsync(string email, string password)

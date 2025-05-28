@@ -9,7 +9,8 @@ namespace VtuberMerchHub.Data
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByIdAsync(int id);
         Task<List<User>> GetAllUsersAsync();
-        Task<User> CreateUserAsync(User user);
+        Task<UserDTO> CreateUserAsync(User user);
+        Task<CustomerDTO> CreateCustomerAsync(CustomerDTO customerDto);
         Task<User> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(int id);
         Task<CustomerDTO> GetCustomerInformationAsync(int userId);
@@ -41,11 +42,36 @@ namespace VtuberMerchHub.Data
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<UserDTO> CreateUserAsync(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return user;
+            return new UserDTO
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                Role = user.Role,
+                AvatarUrl = user.AvatarUrl
+            };
+        }
+
+        public async Task<CustomerDTO> CreateCustomerAsync(CustomerDTO customerDto)
+        {
+            var customer = new Customer
+            {
+                UserId = customerDto.UserId,
+                FullName = customerDto.FullName,
+                Nickname = customerDto.Nickname,
+                Address = customerDto.Address,
+                PhoneNumber = customerDto.PhoneNumber,
+                BirthDate = customerDto.BirthDate,
+                GenderId = customerDto.GenderId
+            };
+
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+
+            return customerDto;
         }
 
         public async Task<User> UpdateUserAsync(User user)
