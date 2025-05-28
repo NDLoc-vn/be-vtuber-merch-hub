@@ -12,6 +12,7 @@ namespace VtuberMerchHub.Data
         Task<User> CreateUserAsync(User user);
         Task<User> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(int id);
+        Task<CustomerDTO> GetCustomerInformationAsync(int userId);
     }
 
     // UserRepository
@@ -60,6 +61,37 @@ namespace VtuberMerchHub.Data
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<CustomerDTO> GetCustomerInformationAsync(int userId)
+        {
+            return await _context.Customers
+                .Include(c => c.Gender)
+                .Include(c => c.User)
+                .Where(c => c.UserId == userId)
+                .Select(c => new CustomerDTO
+                {
+                    CustomerId = c.CustomerId,
+                    UserId = c.UserId,
+                    FullName = c.FullName,
+                    Nickname = c.Nickname,
+                    Address = c.Address,
+                    PhoneNumber = c.PhoneNumber,
+                    BirthDate = c.BirthDate,
+                    Gender = c.Gender == null ? null : new GenderDTO
+                    {
+                        GenderId = c.Gender.GenderId,
+                        GenderType = c.Gender.GenderType
+                    },
+                    User = new UserDTO
+                    {
+                        UserId = c.User.UserId,
+                        Email = c.User.Email,
+                        Role = c.User.Role,
+                        AvatarUrl = c.User.AvatarUrl
+                    }
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }

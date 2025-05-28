@@ -17,8 +17,10 @@ namespace VtuberMerchHub.Services
         Task<User> RegisterUserAsync(string email, string password, string role);
         Task<string> LoginUserAsync(string email, string password);
         Task<string> FindRoleUserAsync(string email, string password);
+        Task<int> FindIdUserAsync(string email, string password);
         Task<bool> ForgotPasswordAsync(string email);
         Task<User> GetUserByIdAsync(int id);
+        Task<CustomerDTO> GetCustomerInformationAsync(int id);
         Task<List<User>> GetAllUsersAsync();
         Task<User> UpdateUserAsync(int id, string email, IFormFile avatar);
         Task<bool> DeleteUserAsync(int id);
@@ -93,6 +95,15 @@ namespace VtuberMerchHub.Services
             return user.Role;
         }
 
+        public async Task<int> FindIdUserAsync(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+                throw new Exception("Người dùng không tồn tại");
+
+            return user.UserId;
+        }
+
         public async Task<bool> ForgotPasswordAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
@@ -108,6 +119,15 @@ namespace VtuberMerchHub.Services
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await _userRepository.GetUserByIdAsync(id) ?? throw new Exception("Người dùng không tìm thấy");
+        }
+
+        public async Task<CustomerDTO> GetCustomerInformationAsync(int id)
+        {
+            var customer = await _userRepository.GetCustomerInformationAsync(id);
+            if (customer == null)
+                throw new Exception("Người dùng không tìm thấy");
+
+            return customer;
         }
 
         public async Task<List<User>> GetAllUsersAsync()

@@ -28,11 +28,12 @@ namespace VtuberMerchHub.Controllers
         {
             var token = await _userService.LoginUserAsync(request.Email, request.Password);
             var role = await _userService.FindRoleUserAsync(request.Email, request.Password);
+            var id = await _userService.FindIdUserAsync(request.Email, request.Password);
             if (role == null)
             {
                 return Unauthorized(new { Message = "Email hoặc mật khẩu không đúng" });
             }
-            return Ok(new { Token = token, Role = role });
+            return Ok(new { Token = token, Role = role, UserId = id });
         }
 
         [HttpPost("forgot-password")]
