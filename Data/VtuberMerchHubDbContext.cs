@@ -164,7 +164,7 @@ namespace VtuberMerchHub.Data
                 entity.Property(e => e.ProductName).HasColumnName("product_name").IsRequired().HasMaxLength(255);
                 entity.Property(e => e.ImageUrl).HasColumnName("image_url").HasMaxLength(255);
                 entity.Property(e => e.Price).HasColumnName("price").IsRequired().HasColumnType("decimal(10,2)");
-                entity.Property(e => e.Stock).HasColumnName("stock").IsRequired();
+                entity.Property(e => e.Stock).HasColumnName("stock");
                 entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
                 entity.HasOne(p => p.Merchandise)

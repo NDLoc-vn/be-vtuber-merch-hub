@@ -38,6 +38,7 @@ namespace VtuberMerchHub.Data
         {
             return await _context.Products
                 .Where(p => p.MerchandiseId == merchandiseId)
+                .Include(p => p.Category)
                 .ToListAsync();
         }
 

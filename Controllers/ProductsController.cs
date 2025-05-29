@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VtuberMerchHub.DTOs;
 using VtuberMerchHub.Models;
 using VtuberMerchHub.Services;
 
@@ -36,8 +37,39 @@ namespace VtuberMerchHub.Controllers
         [HttpGet("merchandise/{merchandiseId}")]
         public async Task<IActionResult> GetProductsByMerchandise(int merchandiseId)
         {
-            var products = await _productService.GetProductsByMerchandiseIdAsync(merchandiseId);
-            return Ok(products);
+
+            // var products = await _productService.GetProductsByMerchandiseIdAsync(merchandiseId);
+            // return Ok(products);
+            
+            try
+            {
+                var products = await _productService.GetProductsByMerchandiseIdAsync(merchandiseId);
+                var productDTOs = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    MerchandiseId = p.MerchandiseId,
+                    ProductName = p.ProductName,
+                    ImageUrl = p.ImageUrl,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    Category = p.Category == null ? null : new CategoryDTO
+                    {
+                        CategoryId = p.Category.CategoryId,
+                        CategoryName = p.Category.CategoryName
+                    }
+                }).ToList();
+
+                return Ok(productDTOs);
+                // var products = await _productService.GetProductsByMerchandiseIdAsync(merchandiseId);
+                // return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi ở đây (nếu có logger), ví dụ: _logger.LogError(ex, "...");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [Authorize(Roles = "Vtuber")]
