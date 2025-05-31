@@ -1,29 +1,19 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using VtuberMerchHub.Data;
-using VtuberMerchHub.Models;
-using Microsoft.AspNetCore.Http;
 using VtuberMerchHub.DTOs;
+using VtuberMerchHub.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace VtuberMerchHub.Services
 {
     public interface ICartService
     {
-        Task<Cart> GetCartByCustomerIdAsync(int customerId);
-        Task<List<CartItem>> GetCartItemsByCartIdAsync(int cartId);
-        Task<Cart> CreateCartAsync(int customerId);
-        Task<CartItem> AddItemToCartAsync(int customerId, int productId, int quantity);
-        Task<CartItem> UpdateCartItemAsync(int cartItemId, int quantity);
+        Task<CartDTO> GetCartByCustomerIdAsync(int customerId);
+        Task<CartItemDTO> AddItemToCartAsync(int customerId, int productId, int quantity);
+        Task<CartItemDTO> UpdateCartItemAsync(int cartItemId, int quantity);
         Task<bool> RemoveItemFromCartAsync(int cartItemId);
         Task<bool> ClearCartAsync(int cartId);
     }
 
-    // CartService
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
@@ -35,56 +25,60 @@ namespace VtuberMerchHub.Services
             _context = context;
         }
 
-        public async Task<Cart> GetCartByCustomerIdAsync(int customerId)
+        public async Task<CartDTO> GetCartByCustomerIdAsync(int customerId)
         {
-            var cart = await _cartRepository.GetCartByCustomerIdAsync(customerId);
+            var cartDto = await _cartRepository.GetCartByCustomerIdAsync(customerId);
+            if (cartDto == null)
+            {
+                var newCart = new Cart
+                {
+                    CustomerId = customerId,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _cartRepository.CreateCartAsync(newCart);
+                return await _cartRepository.GetCartByCustomerIdAsync(customerId);
+            }
+            return cartDto;
+        }
+
+        public async Task<CartItemDTO> AddItemToCartAsync(int customerId, int productId, int quantity)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+
             if (cart == null)
             {
-                cart = await CreateCartAsync(customerId);
+                cart = new Cart
+                {
+                    CustomerId = customerId,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _context.Carts.AddAsync(cart);
+                await _context.SaveChangesAsync();
             }
-            return cart;
-        }
 
-        public async Task<List<CartItem>> GetCartItemsByCartIdAsync(int cartId)
-        {
-            return await _cartRepository.GetCartItemsByCartIdAsync(cartId);
-        }
-
-        public async Task<Cart> CreateCartAsync(int customerId)
-        {
-            var cart = new Cart
-            {
-                CustomerId = customerId,
-                CreatedAt = DateTime.UtcNow
-            };
-            return await _cartRepository.CreateCartAsync(cart);
-        }
-
-        public async Task<CartItem> AddItemToCartAsync(int customerId, int productId, int quantity)
-        {
-            var cart = await GetCartByCustomerIdAsync(customerId);
             var existingItem = cart.CartItems?.FirstOrDefault(ci => ci.ProductId == productId);
-
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
                 return await _cartRepository.UpdateCartItemAsync(existingItem);
             }
 
-            var cartItem = new CartItem
+            var newItem = new CartItem
             {
                 CartId = cart.CartId,
                 ProductId = productId,
                 Quantity = quantity
             };
-            return await _cartRepository.AddItemToCartAsync(cartItem);
+            return await _cartRepository.AddItemToCartAsync(newItem);
         }
 
-        public async Task<CartItem> UpdateCartItemAsync(int cartItemId, int quantity)
+        public async Task<CartItemDTO> UpdateCartItemAsync(int cartItemId, int quantity)
         {
             var cartItem = await _context.CartItems.FindAsync(cartItemId);
             if (cartItem == null)
-                throw new Exception("Sản phẩm trong giỏ hàng không tìm thấy");
+                throw new Exception("Cart item not found.");
 
             cartItem.Quantity = quantity;
             return await _cartRepository.UpdateCartItemAsync(cartItem);

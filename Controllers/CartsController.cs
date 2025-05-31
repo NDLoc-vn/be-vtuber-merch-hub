@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VtuberMerchHub.DTOs;
 using VtuberMerchHub.Models;
 using VtuberMerchHub.Services;
 
@@ -24,13 +25,13 @@ namespace VtuberMerchHub.Controllers
             return Ok(cart);
         }
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("{cartId}/items")]
-        public async Task<IActionResult> GetCartItems(int cartId)
-        {
-            var items = await _cartService.GetCartItemsByCartIdAsync(cartId);
-            return Ok(items);
-        }
+        // [Authorize(Roles = "Customer")]
+        // [HttpGet("{cartId}/items")]
+        // public async Task<IActionResult> GetCartItems(int cartId)
+        // {
+        //     var items = await _cartService.GetCartItemsByCartIdAsync(cartId);
+        //     return Ok(items);
+        // }
 
         [Authorize(Roles = "Customer")]
         [HttpPost("add")]
@@ -53,7 +54,7 @@ namespace VtuberMerchHub.Controllers
         public async Task<IActionResult> RemoveItemFromCart(int cartItemId)
         {
             var result = await _cartService.RemoveItemFromCartAsync(cartItemId);
-            return Ok(new { Success = result });
+            return Ok(new { success = result });
         }
 
         [Authorize(Roles = "Customer")]
@@ -61,7 +62,7 @@ namespace VtuberMerchHub.Controllers
         public async Task<IActionResult> ClearCart(int cartId)
         {
             var result = await _cartService.ClearCartAsync(cartId);
-            return Ok(new { Success = result });
+            return Ok(new { success = result });
         }
     }
 }
