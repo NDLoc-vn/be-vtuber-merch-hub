@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VtuberMerchHub.Models;
+using VtuberMerchHub.DTOs;
 using VtuberMerchHub.Services;
 
 namespace VtuberMerchHub.Controllers
@@ -16,7 +16,6 @@ namespace VtuberMerchHub.Controllers
             _merchandiseService = merchandiseService;
         }
 
-        // [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllMerchandises()
         {
@@ -24,7 +23,14 @@ namespace VtuberMerchHub.Controllers
             return Ok(merchandises);
         }
 
-        // [Authorize]
+        [HttpGet("by-user/{userId}")]
+        public async Task<IActionResult> GetMerchandisesByUserId(int userId)
+        {
+            var merchandises = await _merchandiseService.GetMerchandisesByUserIdAsync(userId);
+            return Ok(merchandises);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMerchandise(int id)
         {
@@ -34,42 +40,41 @@ namespace VtuberMerchHub.Controllers
 
         [Authorize(Roles = "Vtuber")]
         [HttpPost]
-        public async Task<IActionResult> CreateMerchandise([FromBody] CreateMerchandiseRequest merchandise)
+        public async Task<IActionResult> CreateMerchandise([FromForm] CreateMerchandiseRequest request)
         {
-            var createdMerchandise = await _merchandiseService.CreateMerchandiseAsync(
-                merchandise.VtuberId,
-                merchandise.MerchandiseName,
-                merchandise.ImageUrl,
-                merchandise.StartDate,
-                merchandise.EndDate,
-                merchandise.Description
+            var created = await _merchandiseService.CreateMerchandiseAsync(
+                request.VtuberId,
+                request.MerchandiseName,
+                request.ImageUrl,
+                request.StartDate,
+                request.EndDate,
+                request.Description
             );
-            return Ok(createdMerchandise);
+            return Ok(created);
         }
 
         [Authorize(Roles = "Vtuber")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMerchandise(int id, [FromBody] UpdateMerchandiseRequest merchandise)
+        public async Task<IActionResult> UpdateMerchandise(int id, [FromForm] UpdateMerchandiseRequest request)
         {
-            // var updatedMerchandise = await _merchandiseService.UpdateMerchandiseAsync(merchandise);
-            var updatedMerchandise = await _merchandiseService.UpdateMerchandiseAsync(
+            var updated = await _merchandiseService.UpdateMerchandiseAsync(
                 id,
-                merchandise.MerchandiseName,
-                merchandise.ImageUrl,
-                merchandise.StartDate,
-                merchandise.EndDate,
-                merchandise.Description,
-                merchandise.VtuberId
+                request.MerchandiseName,
+                request.ImageUrl,
+                request.StartDate,
+                request.EndDate,
+                request.Description,
+                request.VtuberId
             );
-            return Ok(updatedMerchandise);
+            return Ok(updated);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Vtuber")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMerchandise(int id)
         {
             var result = await _merchandiseService.DeleteMerchandiseAsync(id);
-            return Ok(new { Success = result });
+            return Ok(new { success = result });
         }
     }
 }

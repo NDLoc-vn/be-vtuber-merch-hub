@@ -1,80 +1,88 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using VtuberMerchHub.Data;
-using VtuberMerchHub.Models;
 using Microsoft.AspNetCore.Http;
 using VtuberMerchHub.DTOs;
+using VtuberMerchHub.Models;
+using VtuberMerchHub.Data;
 
 namespace VtuberMerchHub.Services
 {
     public interface IMerchandiseService
     {
-        Task<Merchandise> GetMerchandiseByIdAsync(int id);
-        Task<List<Merchandise>> GetAllMerchandisesAsync();
-        Task<Merchandise> CreateMerchandiseAsync(int vtuberId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description);
-        Task<Merchandise> UpdateMerchandiseAsync(int merchandiseId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string newDescription, int? vtuberId);
+        Task<List<MerchandiseDTO>> GetAllMerchandisesAsync();
+        Task<List<MerchandiseDTO>> GetMerchandisesByUserIdAsync(int userId);
+
+        Task<MerchandiseDTO> GetMerchandiseByIdAsync(int id);
+        Task<MerchandiseDTO> CreateMerchandiseAsync(int vtuberId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description);
+        Task<MerchandiseDTO> UpdateMerchandiseAsync(int id, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description, int? vtuberId);
         Task<bool> DeleteMerchandiseAsync(int id);
     }
 
-    // MerchandiseService
     public class MerchandiseService : IMerchandiseService
     {
-        private readonly IMerchandiseRepository _merchandiseRepository;
-        private readonly ICloudinaryService _cloudinaryService;
+        private readonly IMerchandiseRepository _repository;
+        private readonly ICloudinaryService _cloudinary;
 
-        public MerchandiseService(IMerchandiseRepository merchandiseRepository, ICloudinaryService cloudinaryService)
+        public MerchandiseService(IMerchandiseRepository repository, ICloudinaryService cloudinary)
         {
-            _merchandiseRepository = merchandiseRepository;
-            _cloudinaryService = cloudinaryService;
+            _repository = repository;
+            _cloudinary = cloudinary;
         }
 
-        public async Task<Merchandise> GetMerchandiseByIdAsync(int id)
+        public async Task<List<MerchandiseDTO>> GetAllMerchandisesAsync()
         {
-            return await _merchandiseRepository.GetMerchandiseByIdAsync(id) ?? throw new Exception("Merchandise không tìm thấy");
+            return await _repository.GetAllMerchandisesAsync();
         }
 
-        public async Task<List<Merchandise>> GetAllMerchandisesAsync()
+        public async Task<List<MerchandiseDTO>> GetMerchandisesByUserIdAsync(int userId)
         {
-            return await _merchandiseRepository.GetAllMerchandisesAsync();
+            return await _repository.GetMerchandisesByUserIdAsync(userId);
         }
 
-        public async Task<Merchandise> CreateMerchandiseAsync(int vtuberId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description)
+
+        public async Task<MerchandiseDTO> GetMerchandiseByIdAsync(int id)
         {
+            return await _repository.GetMerchandiseByIdAsync(id)
+                ?? throw new Exception("Merchandise không tồn tại");
+        }
+
+        public async Task<MerchandiseDTO> CreateMerchandiseAsync(int vtuberId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description)
+        {
+            var imageUrlStr = await _cloudinary.UploadImageAsync(imageUrl);
+
             var merchandise = new Merchandise
             {
                 VtuberId = vtuberId,
                 MerchandiseName = merchandiseName,
-                ImageUrl = await _cloudinaryService.UploadImageAsync(imageUrl),
+                ImageUrl = imageUrlStr,
                 StartDate = startDate,
                 EndDate = endDate,
                 Description = description
             };
-            return await _merchandiseRepository.CreateMerchandiseAsync(merchandise);
+
+            return await _repository.CreateMerchandiseAsync(merchandise);
         }
 
-        public async Task<Merchandise> UpdateMerchandiseAsync(int merchandiseId, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string newDescription, int? vtuberId)
+        public async Task<MerchandiseDTO> UpdateMerchandiseAsync(int id, string merchandiseName, IFormFile imageUrl, DateTime? startDate, DateTime? endDate, string? description, int? vtuberId)
         {
-            var merchandise = await _merchandiseRepository.GetMerchandiseByIdAsync(merchandiseId) ?? throw new Exception("Merchandise không tìm thấy");
+            var merchandise = await _repository.FindEntityByIdAsync(id)
+                ?? throw new Exception("Merchandise không tồn tại");
+
             merchandise.MerchandiseName = merchandiseName ?? merchandise.MerchandiseName;
-            merchandise.StartDate = startDate != default ? startDate : merchandise.StartDate;
-            merchandise.EndDate = endDate != default ? endDate : merchandise.EndDate;
-            merchandise.Description = newDescription ?? merchandise.Description;
+            merchandise.StartDate = startDate ?? merchandise.StartDate;
+            merchandise.EndDate = endDate ?? merchandise.EndDate;
+            merchandise.Description = description ?? merchandise.Description;
             merchandise.VtuberId = vtuberId ?? merchandise.VtuberId;
+
             if (imageUrl != null)
             {
-                merchandise.ImageUrl = await _cloudinaryService.UploadImageAsync(imageUrl);
+                merchandise.ImageUrl = await _cloudinary.UploadImageAsync(imageUrl);
             }
-            return await _merchandiseRepository.UpdateMerchandiseAsync(merchandise);
+
+            return await _repository.UpdateMerchandiseAsync(merchandise);
         }
 
         public async Task<bool> DeleteMerchandiseAsync(int id)
         {
-            return await _merchandiseRepository.DeleteMerchandiseAsync(id);
+            return await _repository.DeleteMerchandiseAsync(id);
         }
     }
 }

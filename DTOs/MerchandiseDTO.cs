@@ -10,6 +10,7 @@ namespace VtuberMerchHub.DTOs
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
+        public VtuberDTO? Vtuber { get; set; }
         public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
     }
 }
