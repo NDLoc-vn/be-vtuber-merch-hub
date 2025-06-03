@@ -17,7 +17,7 @@ namespace VtuberMerchHub.Services
         Task<VtuberDTO> GetVtuberByIdAsync(int id);
         Task<List<VtuberDTO>> GetAllVtubersAsync();
         Task<Vtuber> CreateVtuberAsync(int userId, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile);
-        Task<Vtuber> UpdateVtuberAsync(int id, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile);
+        Task<VtuberDTO> UpdateVtuberAsync(int id, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile);
         Task<bool> DeleteVtuberAsync(int id);
     }
 
@@ -61,23 +61,22 @@ namespace VtuberMerchHub.Services
             return await _vtuberRepository.CreateVtuberAsync(vtuber);
         }
 
-
-        // This is shit code
-        public async Task<Vtuber> UpdateVtuberAsync(int id, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile)
+        public async Task<VtuberDTO> UpdateVtuberAsync(int id, string vtuberName, string realName, DateTime? debutDate, string channel, string description, int? vtuberGender, int? speciesId, int? companyId, IFormFile modelFile)
         {
-            var vtuber = await _vtuberRepository.GetVtuberByIdAsync(id) ?? throw new Exception("Vtuber không tìm thấy");
-            var vtuberUpdate = new Vtuber
-            {
-                VtuberId = id,
-                VtuberName = vtuberName,
-                RealName = realName,
-                DebutDate = debutDate,
-                Channel = channel,
-                Description = description,
-                VtuberGender = vtuberGender,
-                SpeciesId = speciesId,
-                CompanyId = companyId
-            };
+            var vtuber = await _vtuberRepository.GetEntityByIdAsync(id) ?? throw new Exception("Vtuber không tìm thấy");
+            // var vtuberUpdate = new Vtuber
+            // {
+            //     // VtuberId = id,
+            //     VtuberName = vtuberName,
+            //     RealName = realName,
+            //     DebutDate = debutDate,
+            //     Channel = channel,
+            //     Description = description,
+            //     VtuberGender = vtuberGender,
+            //     SpeciesId = speciesId,
+            //     CompanyId = companyId
+            // };
+            // vtuber.VtuberName = vtuberName ?? vtuber.VtuberName;
             vtuber.VtuberName = vtuberName ?? vtuber.VtuberName;
             vtuber.RealName = realName ?? vtuber.RealName;
             vtuber.DebutDate = debutDate ?? vtuber.DebutDate;
@@ -90,7 +89,7 @@ namespace VtuberMerchHub.Services
             {
                 vtuber.ModelUrl = await _cloudinaryService.UploadImageAsync(modelFile);
             }
-            return await _vtuberRepository.UpdateVtuberAsync(vtuberUpdate);
+            return await _vtuberRepository.UpdateVtuberAsync(vtuber);
         }
 
         public async Task<bool> DeleteVtuberAsync(int id)

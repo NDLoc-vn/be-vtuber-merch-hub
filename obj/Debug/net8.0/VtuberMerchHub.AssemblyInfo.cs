@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VtuberMerchHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13d42ac514caec944d3383f370b7a95ff6725580")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99c4b8861a7e506bcfb276c0cc8ce9b19c71a88b")]
 [assembly: System.Reflection.AssemblyProductAttribute("VtuberMerchHub")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VtuberMerchHub")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

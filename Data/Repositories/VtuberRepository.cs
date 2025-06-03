@@ -6,10 +6,11 @@ namespace VtuberMerchHub.Data
 {
     public interface IVtuberRepository
     {
+        Task<Vtuber> GetEntityByIdAsync(int id);
         Task<VtuberDTO> GetVtuberByIdAsync(int id);
         Task<List<VtuberDTO>> GetAllVtubersAsync();
         Task<Vtuber> CreateVtuberAsync(Vtuber vtuber);
-        Task<Vtuber> UpdateVtuberAsync(Vtuber vtuber);
+        Task<VtuberDTO> UpdateVtuberAsync(Vtuber vtuber);
         Task<bool> DeleteVtuberAsync(int id);
     }
 
@@ -21,6 +22,11 @@ namespace VtuberMerchHub.Data
         public VtuberRepository(VtuberMerchHubDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Vtuber> GetEntityByIdAsync(int id)
+        {
+            return await _context.Vtubers.FindAsync(id);
         }
 
         public async Task<VtuberDTO> GetVtuberByIdAsync(int id)
@@ -196,11 +202,11 @@ namespace VtuberMerchHub.Data
             return vtuber;
         }
 
-        public async Task<Vtuber> UpdateVtuberAsync(Vtuber vtuber)
+        public async Task<VtuberDTO> UpdateVtuberAsync(Vtuber vtuber)
         {
             _context.Vtubers.Update(vtuber);
             await _context.SaveChangesAsync();
-            return vtuber;
+            return await GetVtuberByIdAsync(vtuber.VtuberId);
         }
 
         public async Task<bool> DeleteVtuberAsync(int id)

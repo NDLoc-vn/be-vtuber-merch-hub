@@ -67,12 +67,11 @@ namespace VtuberMerchHub.Controllers
             }
             catch (Exception ex)
             {
-                // Ghi log lỗi ở đây (nếu có logger), ví dụ: _logger.LogError(ex, "...");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
-        [Authorize(Roles = "Vtuber")]
+        [Authorize(Roles = "Vtuber,Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request)
         {
@@ -88,7 +87,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(createdProduct);
         }
 
-        [Authorize(Roles = "Vtuber")]
+        [Authorize(Roles = "Vtuber,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductRequest request)
         {
@@ -104,7 +103,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(updatedProduct);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Vtuber,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

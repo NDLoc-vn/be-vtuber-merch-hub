@@ -17,8 +17,8 @@ namespace VtuberMerchHub.Services
         Task<Product> GetProductByIdAsync(int id);
         Task<List<Product>> GetAllProductsAsync();
         Task<List<Product>> GetProductsByMerchandiseIdAsync(int merchandiseId);
-        Task<Product> CreateProductAsync(int merchandiseId, string productName, IFormFile imageFile, decimal price, int stock, string description, int? categoryId);
-        Task<Product> UpdateProductAsync(int id, string productName, IFormFile imageFile, decimal price, int stock, string description, int? categoryId);
+        Task<Product> CreateProductAsync(int merchandiseId, string productName, IFormFile imageFile, decimal price, int? stock, string description, int? categoryId);
+        Task<Product> UpdateProductAsync(int id, string productName, IFormFile imageFile, decimal price, int? stock, string description, int? categoryId);
         Task<bool> DeleteProductAsync(int id);
     }
 
@@ -49,7 +49,7 @@ namespace VtuberMerchHub.Services
             return await _productRepository.GetProductsByMerchandiseIdAsync(merchandiseId);
         }
 
-        public async Task<Product> CreateProductAsync(int merchandiseId, string productName, IFormFile imageFile, decimal price, int stock, string description, int? categoryId)
+        public async Task<Product> CreateProductAsync(int merchandiseId, string productName, IFormFile imageFile, decimal price, int? stock, string description, int? categoryId)
         {
             var product = new Product
             {
@@ -64,7 +64,7 @@ namespace VtuberMerchHub.Services
             return await _productRepository.CreateProductAsync(product);
         }
 
-        public async Task<Product> UpdateProductAsync(int id, string productName, IFormFile imageFile, decimal price, int stock, string description, int? categoryId)
+        public async Task<Product> UpdateProductAsync(int id, string productName, IFormFile imageFile, decimal price, int? stock, string description, int? categoryId)
         {
             var product = await _productRepository.GetProductByIdAsync(id) ?? throw new Exception("Sản phẩm không tìm thấy");
             product.ProductName = productName ?? product.ProductName;

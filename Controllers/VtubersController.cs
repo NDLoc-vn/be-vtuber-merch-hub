@@ -32,7 +32,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(vtuber);
         }
 
-        [Authorize(Roles = "Vtuber")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateVtuber([FromForm] CreateVtuberRequest request)
         {
@@ -51,7 +51,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(createdVtuber);
         }
 
-        [Authorize(Roles = "Vtuber")]
+        [Authorize(Roles = "Vtuber,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVtuber(int id, [FromForm] UpdateVtuberRequest request)
         {
