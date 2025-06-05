@@ -39,7 +39,7 @@ namespace VtuberMerchHub.Data
                 .Include(v => v.Merchandises)
                     .ThenInclude(m => m.Products)
                         .ThenInclude(p => p.Category)
-                .FirstOrDefaultAsync(v => v.VtuberId == id);
+                .FirstOrDefaultAsync(v => v.UserId == id);
             if (merchandise == null) return null;
 
             var dto = new VtuberDTO
