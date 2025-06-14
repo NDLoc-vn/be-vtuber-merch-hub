@@ -16,7 +16,7 @@ namespace VtuberMerchHub.Controllers
             _userService = userService;
         }
 
-        [Authorize (Roles = "Customer")]
+        [Authorize (Roles = "Customer,Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomerInformation(int id)
         {
@@ -28,7 +28,7 @@ namespace VtuberMerchHub.Controllers
             return Ok(customer);
         }
 
-        [Authorize (Roles = "Customer")]
+        [Authorize (Roles = "Customer,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomerInformation(int id, [FromForm] UpdateCustomerRequest request)
         {
