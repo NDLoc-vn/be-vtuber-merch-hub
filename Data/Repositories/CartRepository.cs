@@ -105,6 +105,7 @@ namespace VtuberMerchHub.Data
         return new CartItemDTO
         {
             CartItemId = cartItem.CartItemId,
+            CartId = cartItem.CartId,
             ProductId = cartItem.ProductId,
             Quantity = cartItem.Quantity,
             Product = new ProductDTO
