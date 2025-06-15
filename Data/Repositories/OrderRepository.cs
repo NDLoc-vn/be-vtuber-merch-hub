@@ -9,9 +9,8 @@ namespace VtuberMerchHub.Data
         Task<Order> GetOrderByIdAsync(int id);
         Task<List<Order>> GetAllOrdersAsync();
         Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
+        Task<List<Order>> GetOrdersByVtuberIdAsync(int vtuberId);
         Task<Order> CreateOrderAsync(Order order);
-        Task<Order> UpdateOrderAsync(Order order);
-        Task<bool> DeleteOrderAsync(int id);
     }
 
     // OrderRepository
@@ -24,20 +23,42 @@ namespace VtuberMerchHub.Data
             _context = context;
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order?> GetOrderByIdAsync(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderDetails)
+                .ToListAsync();
         }
 
         public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderDetails)
                 .Where(o => o.CustomerId == customerId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetOrdersByVtuberIdAsync(int vtuberId)
+        {
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.Merchandise)
+                .Where(o => o.OrderDetails
+                    .Any(od => od.Product.Merchandise.VtuberId == vtuberId))
                 .ToListAsync();
         }
 
@@ -46,22 +67,6 @@ namespace VtuberMerchHub.Data
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             return order;
-        }
-
-        public async Task<Order> UpdateOrderAsync(Order order)
-        {
-            _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
-            return order;
-        }
-
-        public async Task<bool> DeleteOrderAsync(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null) return false;
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return true;
         }
     }
 }

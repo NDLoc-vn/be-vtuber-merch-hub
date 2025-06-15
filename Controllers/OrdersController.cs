@@ -16,52 +16,35 @@ namespace VtuberMerchHub.Controllers
             _orderService = orderService;
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders()
-        {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
-        }
-
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            return Ok(order);
-        }
-
         [Authorize(Roles = "Customer")]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] Order order)
+        [ProducesResponseType(typeof(OrderReadDTO), StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create([FromBody] OrderCreateDTO dto)
         {
-            var createdOrder = await _orderService.CreateOrderAsync(order);
-            return Ok(createdOrder);
+            var result = await _orderService.CreateOrderAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = result.OrderId }, result);
         }
 
-        [Authorize(Roles = "Customer")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] Order order)
+        [Authorize]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(OrderReadDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
         {
-            order.OrderId = id;
-            var updatedOrder = await _orderService.UpdateOrderAsync(order);
-            return Ok(updatedOrder);
+            var order = await _orderService.GetOrderByIdAsync(id);
+            return order is null ? NotFound() : Ok(order);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var result = await _orderService.DeleteOrderAsync(id);
-            return Ok(new { Success = result });
-        }
+        [Authorize]
+        [HttpGet("customer/{customerId:int}")]
+        public async Task<IActionResult> GetByCustomer(int customerId)
+            => Ok(await _orderService.GetOrdersByCustomerIdAsync(customerId));
 
-        [Authorize(Roles = "Customer")]
-        [HttpGet("customer/{customerId}")]
-        public async Task<IActionResult> GetOrdersByCustomer(int customerId)
+        [Authorize(Roles = "Vtuber")]
+        [HttpGet("vtuber/{vtuberId:int}")]
+        public async Task<IActionResult> GetByVtuber(int vtuberId)
         {
-            var orders = await _orderService.GetOrdersByCustomerIdAsync(customerId);
+            var orders = await _orderService.GetOrdersByVtuberIdAsync(vtuberId);
             return Ok(orders);
         }
     }

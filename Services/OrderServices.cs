@@ -9,57 +9,118 @@ using VtuberMerchHub.Data;
 using VtuberMerchHub.Models;
 using Microsoft.AspNetCore.Http;
 using VtuberMerchHub.DTOs;
+using VtuberMerchHub.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace VtuberMerchHub.Services
 {
     public interface IOrderService
     {
-        Task<Order> GetOrderByIdAsync(int id);
-        Task<List<Order>> GetAllOrdersAsync();
-        Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
-        Task<Order> CreateOrderAsync(Order order);
-        Task<Order> UpdateOrderAsync(Order order);
-        Task<bool> DeleteOrderAsync(int id);
+        Task<OrderReadDTO>           CreateOrderAsync(OrderCreateDTO dto);
+        Task<OrderReadDTO?>          GetOrderByIdAsync(int id);
+        Task<IEnumerable<OrderReadDTO>> GetOrdersByVtuberIdAsync(int vtuberId);
+        Task<IEnumerable<OrderReadDTO>> GetOrdersByCustomerIdAsync(int customerId);
     }
 
     // OrderService
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly VtuberMerchHubDbContext _ctx;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, VtuberMerchHubDbContext ctx)
         {
             _orderRepository = orderRepository;
+            _ctx = ctx;
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<OrderReadDTO> CreateOrderAsync(OrderCreateDTO dto)
         {
-            return await _orderRepository.GetOrderByIdAsync(id) ?? throw new Exception("Đơn hàng không tìm thấy");
+            // 1) Lấy thông tin sản phẩm & giá hiện tại
+            var productIds = dto.Items.Select(i => i.ProductId).Distinct();
+            var products = await _ctx.Products
+                                    .Where(p => productIds.Contains(p.ProductId))
+                                    .ToListAsync();
+
+            // 2) Kiểm tra tồn kho, tính tổng
+            decimal total = 0;
+            var details = new List<OrderDetail>();
+            foreach (var item in dto.Items)
+            {
+                var product = products.FirstOrDefault(p => p.ProductId == item.ProductId)
+                            ?? throw new Exception($"Product {item.ProductId} not found");
+
+                // if (product.Stock < item.Quantity)
+                //     throw new Exception($"Product {product.ProductName} is out of stock");
+
+                total += product.Price * item.Quantity;
+
+                details.Add(new OrderDetail
+                {
+                    ProductId = product.ProductId,
+                    Quantity = item.Quantity,
+                    Price = product.Price
+                });
+
+                product.Stock -= item.Quantity; // trừ kho
+            }
+
+            // 3) Tạo Order
+            var order = new Order
+            {
+                CustomerId = dto.CustomerId,
+                ShippingAddress = dto.ShippingAddress,
+                OrderDate = DateTime.UtcNow,
+                TotalAmount = total,
+                OrderDetails = details
+            };
+
+            var saved = await _orderRepository.CreateOrderAsync(order);
+
+            return MapToReadDTO(saved);
         }
 
-        public async Task<List<Order>> GetAllOrdersAsync()
+        public async Task<OrderReadDTO?> GetOrderByIdAsync(int id)
         {
-            return await _orderRepository.GetAllOrdersAsync();
+            var order = await _orderRepository.GetOrderByIdAsync(id);
+            return order is null ? null : MapToReadDTO(order);
         }
 
-        public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<IEnumerable<OrderReadDTO>> GetOrdersByCustomerIdAsync(int customerId)
         {
-            return await _orderRepository.GetOrdersByCustomerIdAsync(customerId);
+            var list = await _orderRepository.GetOrdersByCustomerIdAsync(customerId);
+            return list.Select(MapToReadDTO);
         }
-
-        public async Task<Order> CreateOrderAsync(Order order)
+        
+        public async Task<IEnumerable<OrderReadDTO>> GetOrdersByVtuberIdAsync(int vtuberId)
         {
-            return await _orderRepository.CreateOrderAsync(order);
+            var orders = await _orderRepository.GetOrdersByVtuberIdAsync(vtuberId);
+            return orders.Select(MapToReadDTO);
         }
-
-        public async Task<Order> UpdateOrderAsync(Order order)
+        
+        /* ---------- Helpers ---------- */
+        private static OrderReadDTO MapToReadDTO(Order o) => new()
         {
-            return await _orderRepository.UpdateOrderAsync(order);
-        }
-
-        public async Task<bool> DeleteOrderAsync(int id)
-        {
-            return await _orderRepository.DeleteOrderAsync(id);
-        }
+            OrderId   = o.OrderId,
+            CustomerId = o.CustomerId,
+            Customer = o.Customer is null ? null : new CustomerBriefDTO
+            {
+                CustomerId = o.Customer.CustomerId,
+                FullName = o.Customer.FullName,
+                Nickname = o.Customer.Nickname ?? string.Empty,
+                PhoneNumber = o.Customer.PhoneNumber ?? string.Empty,
+            },
+            OrderDate  = o.OrderDate,
+            TotalAmount = o.TotalAmount,
+            ShippingAddress = o.ShippingAddress,
+            Items = o.OrderDetails.Select(d => new OrderItemReadDTO
+            {
+                ProductId = d.ProductId,
+                Name      = d.Product?.ProductName ?? string.Empty,
+                ImageUrl  = d.Product?.ImageUrl ?? string.Empty,
+                Price     = d.Price,
+                Quantity  = d.Quantity
+            }).ToList()
+        };
     }
 }
