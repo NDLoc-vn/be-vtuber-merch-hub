@@ -45,7 +45,8 @@ namespace VtuberMerchHub.Data
             return await _context.Orders
                 .AsNoTracking()
                 .Include(o => o.OrderDetails)
-                .Where(o => o.CustomerId == customerId)
+                    .ThenInclude(d => d.Product)
+                 .Where(o => o.CustomerId == customerId)
                 .ToListAsync();
         }
 
