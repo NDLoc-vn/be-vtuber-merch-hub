@@ -60,6 +60,12 @@ public class PaymentController : ControllerBase
         var signData = string.Join("&", inputData.Select(x => $"{x.Key}={x.Value}"));
         var computedHash = VnPayHelper.HmacSHA512(config.HashSecret, signData);
 
+        Console.WriteLine("SIGN_DATA = " + signData);
+        Console.WriteLine("HASH_SECRET = " + config.HashSecret);
+        Console.WriteLine("COMPUTED_HASH = " + computedHash);
+        Console.WriteLine("RECEIVED_HASH = " + vnp_SecureHash);
+
+
         if (computedHash != vnp_SecureHash)
             return BadRequest("Chữ ký không hợp lệ");
 
