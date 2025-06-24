@@ -132,17 +132,17 @@ namespace VtuberMerchHub.Controllers
     public class OrderItemCreateDTO
     {
         public int ProductId { get; set; }
-        public int Quantity  { get; set; }
+        public int Quantity { get; set; }
     }
 
     /* ----- DTO trả về cho client ----- */
     public class OrderReadDTO       // (giống OrderDTO bạn đã có nhưng KHÔNG có navigation object)
     {
-        public int OrderId          { get; set; }
-        public int CustomerId       { get; set; }
+        public int OrderId { get; set; }
+        public int CustomerId { get; set; }
         public CustomerBriefDTO Customer { get; set; }
-        public DateTime OrderDate   { get; set; }
-        public decimal TotalAmount  { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; } = string.Empty;
         public List<OrderItemReadDTO> Items { get; set; } = new();
     }
