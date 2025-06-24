@@ -9,40 +9,46 @@ using VtuberMerchHub.Services;
 public class PaymentController : ControllerBase
 {
     private readonly IConfiguration _config;
+    private readonly ICartService _cartService;
     private readonly IOrderService _orderService;
 
-    public PaymentController(IConfiguration config, IOrderService orderService)
+    public PaymentController(IConfiguration config, ICartService cartService, IOrderService orderService)
     {
         _config = config;
+        _cartService = cartService;
         _orderService = orderService;
     }
 
+    [Authorize(Roles = "Customer")]
     [HttpPost("vnpay")]
-    public async Task<IActionResult> CreatePaymentUrl([FromBody] PaymentRequest req)
+    public async Task<IActionResult> CreatePaymentUrl([FromBody] VNPayRequest req)
     {
-        if (req.Items.Count == 0) return BadRequest("Giỏ hàng trống");
+        var cart = await _cartService.GetCartByCustomerIdAsync(req.CustomerId);
+        if (cart == null || cart.CartItems.Count == 0)
+            return BadRequest("Giỏ hàng trống");
 
-        // Tạm tính totalAmount
-        decimal total = 0;
-        foreach (var item in req.Items)
-        {
-            // Tối giản: bạn có thể thêm validation giá thật nếu cần
-            total += 100000 * item.Quantity; // TODO: thay thế bằng giá thật từ DB
-        }
+        decimal total = cart.CartItems.Sum(i => i.Product.Price * i.Quantity);
 
-        var tempId = Guid.NewGuid().ToString(); // mã tạm cho đơn hàng
+        var tempId = Guid.NewGuid().ToString();
+
+        // Lưu tạm đơn hàng
         TempOrderStore.Save(tempId, new TempOrder
         {
             CustomerId = req.CustomerId,
             ShippingAddress = req.ShippingAddress,
-            Items = req.Items
+            Items = cart.CartItems.Select(i => new OrderItemDTO
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity
+            }).ToList()
         });
 
         var config = _config.GetSection("VNPay").Get<VnPayConfig>();
-        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
         var paymentUrl = VnPayHelper.GeneratePaymentUrl(config, total, tempId, ip);
 
-        Console.WriteLine("Generated payment URL: " + paymentUrl);
+        Console.WriteLine($"Generated payment URL: {paymentUrl}");
 
         return Ok(new { paymentUrl });
     }
@@ -50,9 +56,15 @@ public class PaymentController : ControllerBase
     [HttpGet("vnpay-return")]
     public async Task<IActionResult> HandleReturn()
     {
-        Console.WriteLine("Handling VNPay return...");
+        
         var config = _config.GetSection("VNPay").Get<VnPayConfig>();
         var query = Request.Query;
+
+        Console.WriteLine("Received VNPay return query:");
+        foreach (var (key, value) in query)
+        {
+            Console.WriteLine($"  {key}: {value}");
+        }
 
         var vnp_SecureHash = query["vnp_SecureHash"];
         var inputData = query
@@ -61,13 +73,10 @@ public class PaymentController : ControllerBase
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
 
         var signData = string.Join("&", inputData.Select(x => $"{x.Key}={x.Value}"));
+        Console.WriteLine("SIGN_DATA RETURNED = " + signData);
         var computedHash = VnPayHelper.HmacSHA512(config.HashSecret, signData);
 
-        Console.WriteLine("SIGN_DATA = " + signData);
-        Console.WriteLine("HASH_SECRET = " + config.HashSecret);
-        Console.WriteLine("COMPUTED_HASH = " + computedHash);
-        Console.WriteLine("RECEIVED_HASH = " + vnp_SecureHash);
-
+        Console.WriteLine($"Computed Hash: {computedHash}");
 
         if (computedHash != vnp_SecureHash)
             return BadRequest("Chữ ký không hợp lệ");
@@ -76,7 +85,7 @@ public class PaymentController : ControllerBase
         var responseCode = inputData["vnp_ResponseCode"];
 
         if (responseCode != "00")
-            return Redirect("https://fe-vtubermerchhub.vercel.app/order");
+            return Redirect("https://fe-vtubermerchhub.vercel.app/order?status=fail");
 
         var temp = TempOrderStore.Get(tempId);
         if (temp == null) return BadRequest("Không tìm thấy dữ liệu đơn hàng");
@@ -96,9 +105,16 @@ public class PaymentController : ControllerBase
 
         await _orderService.CreateOrderAsync(orderDto);
 
-        return Redirect("https://fe-vtubermerchhub.vercel.app/order");
+        return Redirect("https://fe-vtubermerchhub.vercel.app/order?status=success");
     }
 }
+
+public class VNPayRequest
+{
+    public int CustomerId { get; set; }
+    public string ShippingAddress { get; set; }
+}
+
 
 
 public class PaymentRequest

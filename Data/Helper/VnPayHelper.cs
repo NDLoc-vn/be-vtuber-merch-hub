@@ -27,6 +27,7 @@ public static class VnPayHelper
         };
 
         var signData = string.Join('&', inputData.Select(x => $"{x.Key}={x.Value}"));
+        Console.WriteLine("SIGN_DATA SENT = " + signData);
         var hash = HmacSHA512(config.HashSecret, signData);
 
         inputData.Add("vnp_SecureHash", hash);
