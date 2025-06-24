@@ -31,6 +31,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
+builder.Services.Configure<VnPayConfig>(builder.Configuration.GetSection("VNPay"));
+
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
