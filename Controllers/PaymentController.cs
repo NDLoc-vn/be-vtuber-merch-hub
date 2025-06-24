@@ -42,12 +42,15 @@ public class PaymentController : ControllerBase
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
         var paymentUrl = VnPayHelper.GeneratePaymentUrl(config, total, tempId, ip);
 
+        Console.WriteLine("Generated payment URL: " + paymentUrl);
+
         return Ok(new { paymentUrl });
     }
 
     [HttpGet("vnpay-return")]
     public async Task<IActionResult> HandleReturn()
     {
+        Console.WriteLine("Handling VNPay return...");
         var config = _config.GetSection("VNPay").Get<VnPayConfig>();
         var query = Request.Query;
 
@@ -73,7 +76,7 @@ public class PaymentController : ControllerBase
         var responseCode = inputData["vnp_ResponseCode"];
 
         if (responseCode != "00")
-            return Redirect("/failed");
+            return Redirect("https://fe-vtubermerchhub.vercel.app/order");
 
         var temp = TempOrderStore.Get(tempId);
         if (temp == null) return BadRequest("Không tìm thấy dữ liệu đơn hàng");
@@ -93,7 +96,7 @@ public class PaymentController : ControllerBase
 
         await _orderService.CreateOrderAsync(orderDto);
 
-        return Redirect("/success");
+        return Redirect("https://fe-vtubermerchhub.vercel.app/order");
     }
 }
 
