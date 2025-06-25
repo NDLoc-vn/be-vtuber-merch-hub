@@ -7,6 +7,7 @@ namespace VtuberMerchHub.DTOs
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; }
+        public int Status { get; set; }
         public List<OrderDetailDTO> OrderItems { get; set; }
     }
 }

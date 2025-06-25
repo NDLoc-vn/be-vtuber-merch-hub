@@ -209,6 +209,7 @@ namespace VtuberMerchHub.Data
                 entity.Property(e => e.OrderDate).HasColumnName("order_date").HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.TotalAmount).HasColumnName("total_amount").IsRequired().HasColumnType("decimal(10,2)");
                 entity.Property(e => e.ShippingAddress).HasColumnName("shipping_address");
+                entity.Property(e => e.Status).HasColumnName("status").IsRequired().HasDefaultValue(0); // 0: Pending, 1: Completed, 2: Cancelled
                 entity.HasOne(o => o.Customer)
                     .WithMany(c => c.Orders)
                     .HasForeignKey(o => o.CustomerId);

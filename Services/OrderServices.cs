@@ -16,10 +16,11 @@ namespace VtuberMerchHub.Services
 {
     public interface IOrderService
     {
-        Task<OrderReadDTO>           CreateOrderAsync(OrderCreateDTO dto);
-        Task<OrderReadDTO?>          GetOrderByIdAsync(int id);
+        Task<OrderReadDTO> CreateOrderAsync(OrderCreateDTO dto);
+        Task<OrderReadDTO?> GetOrderByIdAsync(int id);
         Task<IEnumerable<OrderReadDTO>> GetOrdersByVtuberIdAsync(int vtuberId);
         Task<IEnumerable<OrderReadDTO>> GetOrdersByCustomerIdAsync(int customerId);
+        Task<bool> UpdateOrderStatusAsync(int id, int status);
     }
 
     // OrderService
@@ -70,8 +71,9 @@ namespace VtuberMerchHub.Services
             {
                 CustomerId = dto.CustomerId,
                 ShippingAddress = dto.ShippingAddress,
-                OrderDate = DateTime.UtcNow,
+                OrderDate = DateTime.UtcNow.AddHours(7),
                 TotalAmount = total,
+                Status = 0,
                 OrderDetails = details
             };
 
@@ -95,13 +97,29 @@ namespace VtuberMerchHub.Services
         public async Task<IEnumerable<OrderReadDTO>> GetOrdersByVtuberIdAsync(int vtuberId)
         {
             var orders = await _orderRepository.GetOrdersByVtuberIdAsync(vtuberId);
+            foreach (var order in orders)
+            {
+                order.OrderDetails = order.OrderDetails
+                    .Where(od => od.Product?.Merchandise?.VtuberId == vtuberId)
+                    .ToList();
+            }
             return orders.Select(MapToReadDTO);
+        }
+        
+        public async Task<bool> UpdateOrderStatusAsync(int id, int status)
+        {
+            var order = await _ctx.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order == null) return false;
+
+            order.Status = status;
+            await _ctx.SaveChangesAsync();
+            return true;
         }
         
         /* ---------- Helpers ---------- */
         private static OrderReadDTO MapToReadDTO(Order o) => new()
         {
-            OrderId   = o.OrderId,
+            OrderId = o.OrderId,
             CustomerId = o.CustomerId,
             Customer = o.Customer is null ? null : new CustomerBriefDTO
             {
@@ -110,16 +128,19 @@ namespace VtuberMerchHub.Services
                 Nickname = o.Customer.Nickname ?? string.Empty,
                 PhoneNumber = o.Customer.PhoneNumber ?? string.Empty,
             },
-            OrderDate  = o.OrderDate,
+            OrderDate = o.OrderDate,
             TotalAmount = o.TotalAmount,
             ShippingAddress = o.ShippingAddress,
+            Status = o.Status,
             Items = o.OrderDetails.Select(d => new OrderItemReadDTO
             {
                 ProductId = d.ProductId,
-                Name      = d.Product?.ProductName ?? string.Empty,
-                ImageUrl  = d.Product?.ImageUrl ?? string.Empty,
-                Price     = d.Price,
-                Quantity  = d.Quantity
+                Name = d.Product?.ProductName ?? string.Empty,
+                ImageUrl = d.Product?.ImageUrl ?? string.Empty,
+                Price = d.Price,
+                Quantity = d.Quantity,
+                MerchandiseId = d.Product?.MerchandiseId ?? 0,
+                MerchandiseName = d.Product?.Merchandise?.MerchandiseName ?? string.Empty
             }).ToList()
         };
     }

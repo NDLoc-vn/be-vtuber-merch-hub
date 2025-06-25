@@ -47,5 +47,13 @@ namespace VtuberMerchHub.Controllers
             var orders = await _orderService.GetOrdersByVtuberIdAsync(vtuberId);
             return Ok(orders);
         }
+
+        [Authorize(Roles = "Admin,Vtuber")]
+        [HttpPut("{id:int}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateOrderStatusDTO dto)
+        {
+            var success = await _orderService.UpdateOrderStatusAsync(id, dto.Status);
+            return success ? NoContent() : NotFound();
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace VtuberMerchHub.Data
                 .AsNoTracking()
                 .Include(o => o.OrderDetails)
                     .ThenInclude(d => d.Product)
+                        .ThenInclude(p => p.Merchandise)
                 .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
@@ -46,6 +47,7 @@ namespace VtuberMerchHub.Data
                 .AsNoTracking()
                 .Include(o => o.OrderDetails)
                     .ThenInclude(d => d.Product)
+                        .ThenInclude(p => p.Merchandise)
                  .Where(o => o.CustomerId == customerId)
                 .ToListAsync();
         }

@@ -144,8 +144,14 @@ namespace VtuberMerchHub.Controllers
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; } = string.Empty;
+        public int Status { get; set; }
         public List<OrderItemReadDTO> Items { get; set; } = new();
     }
+
+    public class UpdateOrderStatusDTO
+{
+    public int Status { get; set; }
+}
 
     public class CustomerBriefDTO
     {
@@ -162,5 +168,7 @@ namespace VtuberMerchHub.Controllers
         public string ImageUrl { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public int MerchandiseId { get; set; }
+        public string MerchandiseName { get; set; } 
     }
 }
